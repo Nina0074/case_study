@@ -1,0 +1,108 @@
+WITH 
+-- Customer Distribution
+GenderDistribution AS (
+    SELECT 'Gender' AS Category, CAST(Gender AS STRING) AS Grupo, COUNT(*) AS CustomerCount
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY Gender
+),
+SeniorCitizenDistribution AS (
+    SELECT 'SeniorCitizen' AS Category, CAST(SeniorCitizen AS STRING) AS Grupo, COUNT(*) AS CustomerCount
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY SeniorCitizen
+),
+PartnerDistribution AS (
+    SELECT 'Partner' AS Category, CAST(Partner AS STRING) AS Grupo, COUNT(*) AS CustomerCount
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY Partner
+),
+DependentDistribution AS (
+    SELECT 'Dependents' AS Category, CAST(Dependents AS STRING) AS Grupo, COUNT(*) AS CustomerCount
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY Dependents
+),
+-- Service Usage Patterns
+InternetServiceUsage AS (
+    SELECT 'InternetService' AS Category, CAST(InternetService AS STRING) AS Grupo, COUNT(*) AS CustomerCount
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY InternetService
+),
+StreamingServiceUsage AS (
+    SELECT 'StreamingService' AS Category, CONCAT(CAST(StreamingTV AS STRING), ' & ', CAST(StreamingMovies AS STRING)) AS Grupo, COUNT(*) AS CustomerCount
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY StreamingTV, StreamingMovies
+),
+-- Churn Analysis
+ChurnRateByContract AS (
+    SELECT 'Contract' AS Category, CAST(Contract AS STRING) AS Grupo, 
+           COUNT(*) AS TotalCustomers,
+           SUM(CASE WHEN Churn = TRUE THEN 1 ELSE 0 END) AS ChurnedCustomers,
+           ROUND(SUM(CASE WHEN Churn = TRUE THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS ChurnRate
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY Contract
+),
+ChurnRateBySeniorCitizen AS (
+    SELECT 'SeniorCitizen' AS Category, CAST(SeniorCitizen AS STRING) AS Grupo, 
+           COUNT(*) AS TotalCustomers,
+           SUM(CASE WHEN Churn = TRUE THEN 1 ELSE 0 END) AS ChurnedCustomers,
+           ROUND(SUM(CASE WHEN Churn = TRUE THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS ChurnRate
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY SeniorCitizen
+),
+ChurnRateByGender AS (
+    SELECT 'Gender' AS Category, CAST(Gender AS STRING) AS Grupo, 
+           COUNT(*) AS TotalCustomers,
+           SUM(CASE WHEN Churn = TRUE THEN 1 ELSE 0 END) AS ChurnedCustomers,
+           ROUND(SUM(CASE WHEN Churn = TRUE THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS ChurnRate
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY Gender
+),
+-- Customer Retention
+AvgTenureByChurn AS (
+    SELECT 'Tenure' AS Category, CAST(Churn AS STRING) AS Grupo, AVG(Tenure) AS AvgTenure
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY Churn
+),
+AvgMonthlyChargesByChurn AS (
+    SELECT 'MonthlyCharges' AS Category, CAST(Churn AS STRING) AS Grupo, AVG(MonthlyCharges) AS AvgMonthlyCharges
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY Churn
+),
+-- Service Usage vs Monthly Charges
+AvgMonthlyChargesByTechSupport AS (
+    SELECT 'TechSupport' AS Category, CAST(TechSupport AS STRING) AS Grupo, AVG(MonthlyCharges) AS AvgMonthlyCharges
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY TechSupport
+),
+AvgMonthlyChargesByOnlineSecurity AS (
+    SELECT 'OnlineSecurity' AS Category, CAST(OnlineSecurity AS STRING) AS Grupo, AVG(MonthlyCharges) AS AvgMonthlyCharges
+    FROM `my-project-number-one-439622.telcochurn.telco`
+    GROUP BY OnlineSecurity
+)
+
+-- Final SELECT to combine all results
+SELECT Category, Grupo, CustomerCount, NULL AS ChurnedCustomers, NULL AS ChurnRate, NULL AS AvgTenure, NULL AS AvgMonthlyCharges
+FROM GenderDistribution
+UNION ALL
+SELECT Category, Grupo, CustomerCount, NULL, NULL, NULL, NULL FROM SeniorCitizenDistribution
+UNION ALL
+SELECT Category, Grupo, CustomerCount, NULL, NULL, NULL, NULL FROM PartnerDistribution
+UNION ALL
+SELECT Category, Grupo, CustomerCount, NULL, NULL, NULL, NULL FROM DependentDistribution
+UNION ALL
+SELECT Category, Grupo, CustomerCount, NULL, NULL, NULL, NULL FROM InternetServiceUsage
+UNION ALL
+SELECT Category, Grupo, CustomerCount, NULL, NULL, NULL, NULL FROM StreamingServiceUsage
+UNION ALL
+SELECT Category, Grupo, TotalCustomers, ChurnedCustomers, ChurnRate, NULL, NULL FROM ChurnRateByContract
+UNION ALL
+SELECT Category, Grupo, TotalCustomers, ChurnedCustomers, ChurnRate, NULL, NULL FROM ChurnRateBySeniorCitizen
+UNION ALL
+SELECT Category, Grupo, TotalCustomers, ChurnedCustomers, ChurnRate, NULL, NULL FROM ChurnRateByGender
+UNION ALL
+SELECT Category, Grupo, NULL, NULL, NULL, AvgTenure, NULL FROM AvgTenureByChurn
+UNION ALL
+SELECT Category, Grupo, NULL, NULL, NULL, NULL, AvgMonthlyCharges FROM AvgMonthlyChargesByChurn
+UNION ALL
+SELECT Category, Grupo, NULL, NULL, NULL, NULL, AvgMonthlyCharges FROM AvgMonthlyChargesByTechSupport
+UNION ALL
+SELECT Category, Grupo, NULL, NULL, NULL, NULL, AvgMonthlyCharges FROM AvgMonthlyChargesByOnlineSecurity;
