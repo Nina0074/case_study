@@ -1,0 +1,80 @@
+--Customer profile
+--Gender
+SELECT Gender, COUNT(*) AS CustomerCount
+FROM customers
+GROUP BY Gender;
+
+--senior citizen 
+SELECT SeniorCitizen, COUNT(*) AS CustomerCount
+FROM customers
+GROUP BY SeniorCitizen;
+
+--partner status
+SELECT Partner, COUNT(*) AS CustomerCount
+FROM customers
+GROUP BY Partner;
+
+--dependent status
+SELECT Dependents, COUNT(*) AS CustomerCount
+FROM customers
+GROUP BY Dependents;
+
+--internet service types
+SELECT InternetService, COUNT(*) AS CustomerCount
+FROM customers
+GROUP BY InternetService;
+
+--Streaming
+SELECT StreamingTV, StreamingMovies, COUNT(*) AS CustomerCount
+FROM customers
+GROUP BY StreamingTV, StreamingMovies;
+
+--Churn rate by contract type
+SELECT Contract, 
+       COUNT(*) AS TotalCustomers,
+       SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) AS ChurnedCustomers,
+       ROUND(SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS ChurnRate
+FROM customers
+GROUP BY Contract;
+
+--Churn rate by senior citizen status
+SELECT SeniorCitizen, 
+       COUNT(*) AS TotalCustomers,
+       SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) AS ChurnedCustomers,
+       ROUND(SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS ChurnRate
+FROM customers
+GROUP BY SeniorCitizen;
+
+--Churn rate by gender
+SELECT Gender, 
+       COUNT(*) AS TotalCustomers,
+       SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) AS ChurnedCustomers,
+       ROUND(SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS ChurnRate
+FROM customers
+GROUP BY Gender;
+
+--Tenure to churn - retention
+SELECT Churn, 
+       AVG(Tenure) AS AvgTenure
+FROM customers
+GROUP BY Churn;
+
+--Average monthly charge - customers who churned vs those who didn't
+SELECT Churn, 
+       AVG(MonthlyCharges) AS AvgMonthlyCharges
+FROM customers
+GROUP BY Churn;
+
+--Monthly charges with tech support and without
+SELECT TechSupport, 
+       AVG(MonthlyCharges) AS AvgMonthlyCharges
+FROM customers
+GROUP BY TechSupport;
+
+--Monthly charges with online security vs those without
+SELECT OnlineSecurity, 
+       AVG(MonthlyCharges) AS AvgMonthlyCharges
+FROM customers
+GROUP BY OnlineSecurity;
+
+
