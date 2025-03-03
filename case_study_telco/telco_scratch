@@ -74,6 +74,16 @@ FROM `my-project-number-one-439622.telcochurn.telco`
 GROUP BY tenure_group;
 
 --monthly charges versus churn
+WITH MonthlyChargesWithPercentiles AS (
+  SELECT
+    Churn,
+    MonthlyCharges,
+    PERCENTILE_CONT(MonthlyCharges, 0.25) OVER (PARTITION BY Churn) AS q1_monthly_charges,
+    PERCENTILE_CONT(MonthlyCharges, 0.50) OVER (PARTITION BY Churn) AS median_monthly_charges,
+    PERCENTILE_CONT(MonthlyCharges, 0.75) OVER (PARTITION BY Churn) AS q3_monthly_charges
+  FROM `my-project-number-one-439622.telcochurn.telco`
+)
+
 SELECT
   Churn,
   MIN(MonthlyCharges) AS min_monthly_charges,
@@ -81,20 +91,10 @@ SELECT
   ANY_VALUE(q1_monthly_charges) AS q1_monthly_charges,
   ANY_VALUE(median_monthly_charges) AS median_monthly_charges,
   ANY_VALUE(q3_monthly_charges) AS q3_monthly_charges
-FROM (
-  SELECT
-    Churn,
-    MonthlyCharges,
-    PERCENTILE_CONT(MonthlyCharges, 0.25) OVER (PARTITION BY Churn) AS q1_monthly_charges,
-    PERCENTILE_CONT(MonthlyCharges, 0.50) OVER (PARTITION BY Churn) AS median_monthly_charges,
-    PERCENTILE_CONT(MonthlyCharges, 0.75) OVER (PARTITION BY Churn) AS q3_monthly_charges
-  FROM
-  `my-project-number-one-439622.telcochurn.telco`
-)
-GROUP BY
-  Churn
-ORDER BY
-  Churn;
+FROM MonthlyChargesWithPercentiles
+GROUP BY Churn
+ORDER BY Churn;
+
 
 --tenure distribution of churned vs. non-churned customers 
   SELECT
