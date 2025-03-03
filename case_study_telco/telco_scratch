@@ -124,16 +124,16 @@ ORDER BY
   Churn,
   TenureRange;
 
---service usage vs monthly charges
-SELECT Churn,
-       techsupport, 
-       AVG(MonthlyCharges) AS AvgMonthlyCharges,
-       COUNT(*) AS total_customers, 
-       COUNT(CASE WHEN churn = TRUE THEN 1 END) AS churned_customers,
-       ROUND(COUNT(CASE WHEN churn = TRUE THEN 1 END) * 100.0 / COUNT(*), 2) AS churn_rate
-FROM `my-project-number-one-439622.telcochurn.telco`
-GROUP BY Churn, techsupport;
 
+
+--churn rate vs tech support 
+SELECT 
+  techsupport,
+  COUNT(*) AS total_customers,
+  COUNT(CASE WHEN churn = TRUE THEN 1 END) AS churned_customers,
+  ROUND(COUNT(CASE WHEN churn = TRUE THEN 1 END) * 100.0 / COUNT(*), 2) AS churn_rate
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY techsupport;
 
 -- Streaming services (TV and Movies)
 SELECT StreamingTV, StreamingMovies, COUNT(*) AS CustomerCount
@@ -142,11 +142,17 @@ GROUP BY StreamingTV, StreamingMovies;
 
 
 --online security
-SELECT Churn,
-       onlinesecurity, 
-       AVG(MonthlyCharges) AS AvgMonthlyCharges,
+SELECT onlinesecurity, 
        COUNT(*) AS total_customers, 
        COUNT(CASE WHEN churn = TRUE THEN 1 END) AS churned_customers,
        ROUND(COUNT(CASE WHEN churn = TRUE THEN 1 END) * 100.0 / COUNT(*), 2) AS churn_rate
 FROM `my-project-number-one-439622.telcochurn.telco`
-GROUP BY Churn, onlinesecurity;
+GROUP BY onlinesecurity;
+
+
+--onlinesecurity vs monthly charges
+SELECT onlinesecurity, 
+       AVG(MonthlyCharges) AS AvgMonthlyCharges,
+      FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY onlinesecurity;
+
