@@ -156,3 +156,28 @@ SELECT onlinesecurity,
       FROM `my-project-number-one-439622.telcochurn.telco`
 GROUP BY onlinesecurity;
 
+--correlation between monthly charges and tenure 
+SELECT 
+    CORR(tenure, MonthlyCharges) AS correlation_value
+FROM `my-project-number-one-439622.telcochurn.telco`;
+
+--missing value
+SELECT 
+    COUNT(*) AS total_rows,
+    SUM(CASE WHEN tenure IS NULL THEN 1 ELSE 0 END) AS missing_tenure,
+    SUM(CASE WHEN MonthlyCharges IS NULL THEN 1 ELSE 0 END) AS missing_monthly_charges
+FROM `my-project-number-one-439622.telcochurn.telco`;
+
+--summary
+SELECT 
+    COUNT(*) AS total_rows,
+    AVG(tenure) AS avg_tenure,
+    STDDEV(tenure) AS std_tenure,
+    AVG(MonthlyCharges) AS avg_monthly_charges,
+    STDDEV(MonthlyCharges) AS std_monthly_charges
+FROM `my-project-number-one-439622.telcochurn.telco`;
+
+--correlation between monthly charges and tenure 
+SELECT 
+    CORR(tenure, MonthlyCharges) AS correlation_value
+FROM `my-project-number-one-439622.telcochurn.telco`;
