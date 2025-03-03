@@ -133,3 +133,9 @@ SELECT Churn,
        ROUND(COUNT(CASE WHEN churn = TRUE THEN 1 END) * 100.0 / COUNT(*), 2) AS churn_rate
 FROM `my-project-number-one-439622.telcochurn.telco`
 GROUP BY Churn, techsupport;
+
+
+-- Streaming services (TV and Movies)
+SELECT StreamingTV, StreamingMovies, COUNT(*) AS CustomerCount
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY StreamingTV, StreamingMovies;
