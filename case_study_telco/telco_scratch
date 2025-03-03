@@ -1,0 +1,119 @@
+--churn distribution
+SELECT 
+  COUNT(*) AS total_customers, 
+  COUNT(CASE WHEN churn = TRUE THEN 1 END) AS churned_customers,
+  COUNT(CASE WHEN churn = FALSE THEN 1 END) AS retained_customers
+FROM `my-project-number-one-439622.telcochurn.telco`;
+
+--churn by gender
+SELECT 
+  gender,
+  COUNT(*) AS total_customers, 
+  COUNT(CASE WHEN churn = TRUE THEN 1 END) AS churned_customers,
+  ROUND(COUNT(CASE WHEN churn = TRUE THEN 1 END) * 100.0 / COUNT(*), 2) AS churn_rate
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY gender;
+
+--churn by senior citizens
+SELECT 
+  seniorcitizen,
+  COUNT(*) AS total_customers, 
+  COUNT(CASE WHEN churn = FALSE THEN 1 END) AS churned_customers,
+  ROUND(COUNT(CASE WHEN churn = TRUE THEN 1 END) * 100.0 / COUNT(*), 2) AS churn_rate
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY seniorcitizen;
+
+--churn by partner
+SELECT
+  partner,
+  COUNT(*) AS total_customers, 
+  COUNT(CASE WHEN churn = TRUE THEN 1 END) AS churned_customers,
+  ROUND(COUNT(CASE WHEN churn = TRUE THEN 1 END) * 100.0 / COUNT(*), 2) AS churn_rate
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY partner;
+
+--churn by dependents
+SELECT 
+  dependents,
+  COUNT(*) AS total_customers, 
+  COUNT(CASE WHEN churn = TRUE THEN 1 END) AS churned_customers,
+  ROUND(COUNT(CASE WHEN churn = TRUE THEN 1 END) * 100.0 / COUNT(*), 2) AS churn_rate
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY dependents;
+
+--churn by service usage and churn
+SELECT 
+  internetService,
+  COUNT(*) AS total_customers,
+  COUNT(CASE WHEN churn = TRUE THEN 1 END) AS churned_customers,
+  ROUND(COUNT(CASE WHEN churn = TRUE THEN 1 END) * 100.0 / COUNT(*), 2) AS churn_rate
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY internetService;
+
+--churn rate by contract type
+SELECT 
+  contract,
+  COUNT(*) AS total_customers,
+  COUNT(CASE WHEN churn = TRUE THEN 1 END) AS churned_customers,
+  ROUND(COUNT(CASE WHEN churn = TRUE THEN 1 END) * 100.0 / COUNT(*), 2) AS churn_rate
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY contract;
+
+--churn rate by tenure
+SELECT 
+  CASE 
+    WHEN tenure < 12 THEN '0-12 months'
+    WHEN tenure BETWEEN 12 AND 24 THEN '12-24 months'
+    WHEN tenure BETWEEN 24 AND 36 THEN '24-36 months'
+    ELSE '36+ months'
+  END AS tenure_group,
+  COUNT(*) AS total_customers,
+  COUNT(CASE WHEN churn = TRUE THEN 1 END) AS churned_customers,
+  ROUND(COUNT(CASE WHEN churn = TRUE THEN 1 END) * 100.0 / COUNT(*), 2) AS churn_rate
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY tenure_group;
+
+--monthly charges versus churn
+SELECT
+  Churn,
+  MIN(MonthlyCharges) AS min_monthly_charges,
+  MAX(MonthlyCharges) AS max_monthly_charges,
+  ANY_VALUE(q1_monthly_charges) AS q1_monthly_charges,
+  ANY_VALUE(median_monthly_charges) AS median_monthly_charges,
+  ANY_VALUE(q3_monthly_charges) AS q3_monthly_charges
+FROM (
+  SELECT
+    Churn,
+    MonthlyCharges,
+    PERCENTILE_CONT(MonthlyCharges, 0.25) OVER (PARTITION BY Churn) AS q1_monthly_charges,
+    PERCENTILE_CONT(MonthlyCharges, 0.50) OVER (PARTITION BY Churn) AS median_monthly_charges,
+    PERCENTILE_CONT(MonthlyCharges, 0.75) OVER (PARTITION BY Churn) AS q3_monthly_charges
+  FROM
+  `my-project-number-one-439622.telcochurn.telco`
+)
+GROUP BY
+  Churn
+ORDER BY
+  Churn;
+
+--tenure distribution of churned vs. non-churned customers 
+  SELECT
+  Churn,
+  CASE
+    WHEN Tenure BETWEEN 0 AND 12 THEN '0-12 months'
+    WHEN Tenure BETWEEN 13 AND 24 THEN '13-24 months'
+    WHEN Tenure BETWEEN 25 AND 36 THEN '25-36 months'
+    WHEN Tenure BETWEEN 37 AND 48 THEN '37-48 months'
+    WHEN Tenure BETWEEN 49 AND 60 THEN '49-60 months'
+    WHEN Tenure BETWEEN 61 AND 72 THEN '61-72 months'
+    ELSE '72+ months' -- Handle any tenures above 72
+  END AS TenureRange,
+  COUNT(*) AS CustomerCount
+FROM
+  `my-project-number-one-439622.telcochurn.telco`
+GROUP BY
+  Churn,
+  TenureRange
+ORDER BY
+  Churn,
+  TenureRange;
