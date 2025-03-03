@@ -18,7 +18,7 @@ GROUP BY gender;
 SELECT 
   seniorcitizen,
   COUNT(*) AS total_customers, 
-  COUNT(CASE WHEN churn = FALSE THEN 1 END) AS churned_customers,
+  COUNT(CASE WHEN churn = TRUE THEN 1 END) AS churned_customers,
   ROUND(COUNT(CASE WHEN churn = TRUE THEN 1 END) * 100.0 / COUNT(*), 2) AS churn_rate
 FROM `my-project-number-one-439622.telcochurn.telco`
 GROUP BY seniorcitizen;
