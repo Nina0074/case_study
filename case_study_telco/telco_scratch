@@ -73,6 +73,12 @@ SELECT
 FROM `my-project-number-one-439622.telcochurn.telco`
 GROUP BY tenure_group;
 
+--average monthly charge versus churn
+SELECT Churn, 
+       AVG(MonthlyCharges) AS AvgMonthlyCharges
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY Churn;
+
 --monthly charges versus churn
 WITH MonthlyChargesWithPercentiles AS (
   SELECT
