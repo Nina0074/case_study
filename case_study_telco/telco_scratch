@@ -101,6 +101,13 @@ FROM MonthlyChargesWithPercentiles
 GROUP BY Churn
 ORDER BY Churn;
 
+--churn vs monthly charges
+SELECT
+  Churn,
+  APPROX_QUANTILES(MonthlyCharges, 2)[OFFSET(1)] AS Median_MonthlyCharges
+FROM   `my-project-number-one-439622.telcochurn.telco`
+GROUP BY Churn
+
 
 --tenure distribution of churned vs. non-churned customers 
   SELECT
