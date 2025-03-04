@@ -223,8 +223,6 @@ FROM `my-project-number-one-439622.telcochurn.telco`
 GROUP BY OnlineSecurity;
 
 
-
-
 --correlation between monthly charges and tenure 
 SELECT 
     CORR(tenure, MonthlyCharges) AS correlation_value
@@ -250,3 +248,5 @@ FROM `my-project-number-one-439622.telcochurn.telco`;
 SELECT 
     CORR(tenure, MonthlyCharges) AS correlation_value
 FROM `my-project-number-one-439622.telcochurn.telco`;
+
+
