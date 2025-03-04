@@ -1,3 +1,50 @@
+--gender distribution
+SELECT 
+    gender AS gender,
+    COUNT(*) AS Count,
+    (COUNT(*) * 100.0 / (SELECT COUNT(*) FROM `my-project-number-one-439622.telcochurn.telco`)) AS Percentage
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY gender
+ORDER BY Percentage DESC;
+
+--senior citizen distribution
+SELECT 
+    seniorcitizen AS senior_citizen,
+    COUNT(*) AS Count,
+    (COUNT(*) * 100.0 / (SELECT COUNT(*) FROM `my-project-number-one-439622.telcochurn.telco`)) AS Percentage
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY seniorcitizen
+ORDER BY Percentage DESC;
+
+--dependents distribution
+SELECT 
+    dependents AS dependents,
+    COUNT(*) AS Count,
+    (COUNT(*) * 100.0 / (SELECT COUNT(*) FROM `my-project-number-one-439622.telcochurn.telco`)) AS Percentage
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY dependents
+ORDER BY Percentage DESC;
+
+--partner distribution
+SELECT 
+    partner AS partner,
+    COUNT(*) AS Count,
+    (COUNT(*) * 100.0 / (SELECT COUNT(*) FROM `my-project-number-one-439622.telcochurn.telco`)) AS Percentage
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY partner
+ORDER BY Percentage DESC;
+
+--contract distribution
+SELECT 
+    contract AS contract,
+    COUNT(*) AS Count,
+    (COUNT(*) * 100.0 / (SELECT COUNT(*) FROM `my-project-number-one-439622.telcochurn.telco`)) AS Percentage
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY contract
+ORDER BY Percentage DESC;
+
+
+
 --churn distribution
 SELECT 
   COUNT(*) AS total_customers, 
