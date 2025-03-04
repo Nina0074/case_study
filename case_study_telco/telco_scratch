@@ -210,6 +210,21 @@ SELECT onlinesecurity,
       FROM `my-project-number-one-439622.telcochurn.telco`
 GROUP BY onlinesecurity;
 
+-- Compare monthly charges for customers with tech support vs those without
+SELECT TechSupport, 
+       AVG(MonthlyCharges) AS AvgMonthlyCharges
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY TechSupport;
+
+-- Compare monthly charges for customers with online security vs those without
+SELECT OnlineSecurity, 
+       AVG(MonthlyCharges) AS AvgMonthlyCharges
+FROM `my-project-number-one-439622.telcochurn.telco`
+GROUP BY OnlineSecurity;
+
+
+
+
 --correlation between monthly charges and tenure 
 SELECT 
     CORR(tenure, MonthlyCharges) AS correlation_value
